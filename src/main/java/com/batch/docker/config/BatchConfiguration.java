@@ -1,6 +1,5 @@
 package com.batch.docker.config;
 
-import cds.JobCompletionNotificationListener;
 import com.batch.docker.Processor.EmployeeItemProcessor;
 import com.batch.docker.domain.Employee;
 import org.springframework.batch.core.Job;
@@ -58,17 +57,16 @@ public class BatchConfiguration {
     @Bean
     public JdbcBatchItemWriter<Employee> writer() {
         JdbcBatchItemWriter<Employee> writer = new JdbcBatchItemWriter<>();
-        writer.setItemSqlParameterSourceProvider(new BeanPropertyItemSqlParameterSourceProvider<Employee>());
+        writer.setItemSqlParameterSourceProvider(new BeanPropertyItemSqlParameterSourceProvider<>());
         writer.setSql("INSERT INTO people (first_name, last_name) VALUES (:firstName, :lastName)");
         writer.setDataSource(dataSource);
         return writer;
     }
 
     @Bean
-    public Job importUserJob(JobCompletionNotificationListener listener) {
+    public Job importUserJob() {
         return jobBuilderFactory.get("importUserJob")
                 .incrementer(new RunIdIncrementer())
-                .listener(listener)
                 .flow(step1())
                 .end()
                 .build();
